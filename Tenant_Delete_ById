@@ -1,0 +1,13 @@
+ALTER PROCEDURE [dbo].[Tenant_Delete_ById] 
+@Id int
+
+AS
+BEGIN
+	
+DELETE 
+
+  FROM [dbo].[Tenants]
+
+WHERE Id = @Id
+
+END
