@@ -1,0 +1,33 @@
+/*
+DECLARE	@return_value int
+
+EXEC	[dbo].[Properties_SelectByAddressId]
+		@Id = 177859
+GO
+*/
+
+ALTER PROC [dbo].[Properties_SelectByAddressId]
+	@Id int
+	
+
+AS
+BEGIN
+
+	SELECT
+			Properties.Id
+			, PropertyType
+			, NumberOfUnits
+			, YearBuilt
+			, RentControl
+			, AssessorParcelNumber
+			, HasDetached
+			, OwnerId
+			
+	 FROM [dbo].[Properties] WITH(NOLOCK) inner join dbo.PropertyAddresses
+			on Properties.Id = PropertyAddresses.PropertyId
+
+			inner join dbo.Addresses
+				on Addresses.Id = PropertyAddresses.AddressesId
+	 WHERE Addresses.Id = @Id
+
+END
