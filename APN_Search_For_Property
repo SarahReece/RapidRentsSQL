@@ -1,0 +1,24 @@
+ALTER PROC [dbo].[APN_Search_For_Property]
+@search_item nvarchar(100)
+
+AS
+BEGIN
+/*
+exec APN_Search_For_Property'2173002027'
+*/
+SELECT DISTINCT TOP 10
+	
+	 [Id]
+	, [PropertyType]
+	, [NumberOfUnits]
+	, [YearBuilt]
+	, [HasDetached]
+	, [AssessorParcelNumber]
+	, [HasDetached]
+	, [ImportedPropertyId]
+	FROM [dbo].[Properties] with (nolock)
+	WHERE AssessorParcelNumber LIKE '%'+@search_item+'%' 
+	
+
+
+END
