@@ -1,0 +1,71 @@
+ALTER Procedure [dbo].[Listings_By_Page_V2]
+	@pageindex int,
+	@pagesize int,
+	@status int
+
+AS
+
+/*
+	
+	0 NOT SET (DEFAULT)
+	1 soon
+	2 active
+	4 inactive
+	8 flagged
+	16 rentControlled
+	32 section8
+
+
+	1 soon
+	2 active
+	3 = 1 & 2 /soon&active
+	4 inactive
+	5 = 1 & 4 /soon&inactive
+	6 = 2 & 4 /active&inactive
+	8 = flagged
+	9 = 1 & 8 /soon&flagged
+	10 = 2 & 8 /active&flagged
+	12 = 4 & 8 /inactive&flagged
+
+
+DECLARE
+	@pageIndex int = 0
+	, @pagesize int = 10
+	, @status int = 3
+
+	execute dbo.Listings_By_Page_V2 @pageIndex, @pagesize, @status
+
+*/
+
+
+BEGIN
+
+	SELECT 
+		
+		 [Id]
+		, [RentCost]
+		, [LeaseTerms]
+		, [AvailabilityDate]
+		, [Status]
+		--,[Status]&@Status
+		, [HasParking]
+		, [UtilitiesIncluded]
+		, [DateAdded]
+		, [DateModified]
+		, [Description]
+		, [Headline]
+		, [Featured]
+		, [SuggestedCost]
+		, [totalCount] = COUNT(1) OVER()
+		
+		FROM [dbo].[Listings] WITH (NOLOCK)
+	
+
+	WHERE ([Status]& @Status) != 0
+
+		order by id
+		
+		offset @pagesize * (@pageindex) rows
+		fetch next @pagesize rows only option (recompile);
+
+END
