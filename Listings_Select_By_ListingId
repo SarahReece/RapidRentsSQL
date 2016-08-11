@@ -1,0 +1,66 @@
+/*
+
+DECLARE	@return_value int
+
+EXEC	[dbo].[Listings_SelectListingByLiId]
+		@Id = 159
+
+
+
+GO
+
+*/
+
+ALTER proc [dbo].[Listings_Select_By_ListingId]
+	@Id int
+	
+
+AS
+BEGIN
+
+	SELECT
+			l.Id
+			, RentCost
+			, LeaseTerms
+			, AvailabilityDate
+			, "Status"
+			, HasParking
+			, UtilitiesIncluded
+			, l.DateAdded
+			, l.DateModified
+			, "Description"
+			, Headline
+			, Featured
+			, SuggestedCost
+			--, ListingsAddresses.AddressId
+	 FROM [dbo].[Listings] as l WITH(NOLOCK) inner join dbo.ListingsAddresses as la
+			on l.Id = la.ListingId
+
+			inner join dbo.Addresses as a
+				on a.Id = la.AddressId
+	 WHERE l.Id = @Id
+
+
+	SELECT
+		la.ListingId
+		,Id
+		, UserId
+		, Line1
+		, Line2
+		, City
+		, State
+		, ZipCode
+		, DateAdded
+		, DateModified
+		, Latitude
+		, Longitude
+		, ImportedCost
+		--, Geo
+		--, ImportedAddressId
+		
+	FROM [dbo].[Addresses] as a WITH(NOLOCK) inner join dbo.ListingsAddresses as la
+			on a.Id = la.AddressId
+
+	WHERE la.ListingId = @Id
+
+END
