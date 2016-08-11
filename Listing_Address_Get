@@ -1,0 +1,44 @@
+ALTER PROCEDURE [dbo].[Listing_Address_Get]
+
+AS
+BEGIN
+/*
+DECLARE @RC int
+EXECUTE @RC = [dbo].[Listing_Address_Get] 
+*/
+SELECT
+		Listings.Id
+	, RentCost
+	, LeaseTerms
+	, AvailabilityDate
+	, "Status"
+	, HasParking
+	, UtilitiesIncluded
+	, Listings.DateAdded
+	, Listings.DateModified
+	, "Description"
+	, Headline
+	, AddressId
+	, ListingId
+	, Line1
+	, Line2
+	, City
+	, "State"
+	, ZipCode
+	, ImportedAddressId
+
+ FROM [dbo].[Listings] WITH(NOLOCK)
+	inner join ListingsAddresses
+	on Listings.Id = ListingsAddresses.ListingId
+	inner join Addresses
+	on Addresses.Id = ListingsAddresses.AddressId
+
+	DECLARE @AddressId int
+	DECLARE @ListingId int
+
+	SELECT @AddressId = ListingsAddresses.AddressId
+	FROM ListingsAddresses
+	WHERE ListingsAddresses.ListingId = @ListingId
+
+
+END
