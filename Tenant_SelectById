@@ -1,0 +1,33 @@
+/*
+DECLARE	@return_value int
+
+EXEC	@return_value = [dbo].[Tenant_SelectById]
+		@Id = 10
+
+SELECT	'Return Value' = @return_value
+
+GO
+*/
+
+ALTER PROCEDURE [dbo].[Tenant_SelectById] 
+@Id int
+
+AS
+BEGIN
+	
+SELECT [Id]
+      ,[UserId]
+      ,[DateAdded]
+      ,[DateModified]
+      ,[FirstName]
+      ,[LastName]
+      ,[MoveInDate]
+      ,[MoveOutDate]
+      ,[LeaseTerms]
+      ,[IsRentCurrent]
+  FROM [dbo].[Tenants]
+
+WHERE Id = @Id
+
+
+END
