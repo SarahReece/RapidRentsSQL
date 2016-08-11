@@ -1,0 +1,16 @@
+ALTER PROCEDURE [dbo].[Tenant_Update]
+
+AS
+BEGIN
+
+UPDATE [dbo].[Tenants]
+SET  
+  FirstName = @FirstName
+  , LastName = @LastName
+  , MoveInDate = @MoveInDate
+  , MoveOutDate = @MoveOutDate
+  , LeaseTerms = @LeaseTerms
+  , IsRentCurrent = @IsRentCurrent
+
+WHERE Id = @Id
+END
