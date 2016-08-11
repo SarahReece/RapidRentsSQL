@@ -1,0 +1,60 @@
+ALTER PROCEDURE [dbo].[Tenant_Insert]
+
+/*
+DECLARE	@return_value int,
+		@Id int
+
+SELECT	@Id = 1
+
+EXEC	@return_value = [dbo].[Tenant_Update]
+		@UserId = N'NEWUSER',
+		@FirstName = N'NEWFIRST',
+		@LastName = N'NEWLAST',
+		@MoveInDate = '01/01/2014',
+		@MoveOutDate = '02/02/2016',
+		@LeaseTerms = 1,
+		@IsRentCurrent = TRUE
+		@Id = @Id OUTPUT
+
+SELECT	@Id as N'@Id'
+
+SELECT	'Return Value' = @return_value
+
+GO
+*/
+
+  @UserId nvarchar(128)
+  , @FirstName nvarchar(50)
+  , @LastName nvarchar(50)
+  , @MoveInDate date
+  , @MoveOutDate date
+  , @LeaseTerms int
+  , @IsRentCurrent bit
+  , @Id int OUTPUT
+
+AS
+BEGIN
+
+INSERT [dbo].[Tenants] 
+  (UserId
+  , FirstName
+  , LastName
+  , MoveInDate
+  , MoveOutDate
+  , LeaseTerms
+  , IsRentCurrent)
+  
+VALUES 
+  (@UserId
+  , @FirstName
+  , @LastName
+  , @MoveInDate
+  , @MoveOutDate
+  , @LeaseTerms
+  , @IsRentCurrent)
+  
+SET @Id = SCOPE_IDENTITY()
+
+END
+
+
