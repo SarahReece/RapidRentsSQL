@@ -1,0 +1,20 @@
+ALTER PROCEDURE [dbo].[Tenant_Select] 
+
+AS
+BEGIN
+	
+
+SELECT [Id]
+      ,[UserId]
+      ,[DateAdded]
+      ,[DateModified]
+      ,[FirstName]
+      ,[LastName]
+      ,[MoveInDate]
+      ,[MoveOutDate]
+      ,[LeaseTerms]
+      ,[IsRentCurrent]
+  FROM [dbo].[Tenants]
+
+
+END
