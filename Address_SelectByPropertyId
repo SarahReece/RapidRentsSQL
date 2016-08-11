@@ -1,0 +1,56 @@
+/*
+
+DECLARE	@return_value int
+
+EXEC	[dbo].[Address_SelectByPropertyId]
+		@Id = 31837
+GO
+
+*/
+
+ALTER proc [dbo].[Address_SelectByPropertyId_V2]
+	@Id int
+	
+
+AS
+BEGIN
+
+	SELECT
+		PropertyAddresses.PropertyId
+		, Addresses.Id
+		, UserId
+		, Line1
+		, Line2
+		, City
+		, State
+		, ZipCode
+		, DateAdded
+		, DateModified
+		, Latitude
+		, Longitude
+		, ImportedCost
+		
+	FROM [dbo].[Addresses] WITH(NOLOCK) inner join dbo.PropertyAddresses
+			on Addresses.Id = PropertyAddresses.AddressesId
+
+	WHERE PropertyAddresses.PropertyId = @Id
+
+	SELECT
+			Properties.Id
+			, PropertyType
+			, NumberOfUnits
+			, YearBuilt
+			, RentControl
+			, AssessorParcelNumber
+			, HasDetached
+			, OwnerId
+			
+	 FROM [dbo].[Properties] WITH(NOLOCK) inner join dbo.PropertyAddresses
+			on Properties.Id = PropertyAddresses.PropertyId
+
+			inner join dbo.Addresses
+				on Addresses.Id = PropertyAddresses.AddressesId
+	 WHERE Properties.Id = @Id
+
+
+END
