@@ -1,0 +1,90 @@
+ALTER PROC [dbo].[SelectAddressByListingId] 
+
+@ListingId int
+/*
+EXEC AddressesByLiId 201
+*/
+
+AS
+BEGIN
+
+DECLARE 
+  @Lat DECIMAL(18, 15)
+	, @Lng DECIMAL(18, 15)
+	, @Line1 nvarchar(128)
+	, @Line2 nvarchar(128)
+	, @Meters FLOAT
+	, @Geo geography
+	, @ListingIds dbo.IntIdTable
+	, @AddressId int 
+
+SET @Meters = 25  * 1609.34;
+
+SELECT @AddressId = AddressId FROM dbo.ListingsAddresses 
+	WHERE ListingId = @ListingId
+
+SELECT @Lat = Latitude 
+	,@Lng = Longitude
+	,@Line1 = Line1
+	,@Line2 = Line2
+From dbo.Addresses
+	Where Id = @AddressId
+
+SET @Geo = geography::Point(@Lat, @Lng, 4326);
+
+
+INSERT INTO	@ListingIds (Data)
+
+SELECT TOP 4 
+	listingId
+	FROM dbo.ListingsAddresses inner join dbo.addresses 
+		on dbo.ListingsAddresses.AddressId = dbo.addresses.Id
+
+			WHERE concat(Line1, Line2) != concat(@Line1, @Line2) and
+			dbo.addresses.Latitude is not null  and
+			dbo.addresses.Longitude is not null and
+			@Geo.STDistance (geography::Point(dbo.addresses.Latitude, dbo.addresses.Longitude, 4326)) < @Meters
+
+ORDER BY @Geo.STDistance (geography::Point(dbo.addresses.Latitude, dbo.addresses.Longitude, 4326)) asc			
+
+SELECT 
+  listingId
+	, Id,
+	, Line1
+	, Line2
+	, City,
+	, [State]
+	(@Geo.STDistance (geography::Point(dbo.Addresses.latitude, dbo.Addresses.longitude, 4326))/1609.34) distance
+	From dbo.Addresses inner join dbo.ListingsAddresses
+		on dbo.Addresses.Id = dbo.ListingsAddresses.AddressId 
+			inner join @ListingIds ls --REMINDER, @ListingIds MUST be tied to an alias
+			on dbo.ListingsAddresses.listingId = ls.data
+	WHERE	
+			concat(Line1, Line2) != concat(@Line1, @Line2) and
+			dbo.Addresses.Latitude is not null  and
+			dbo.Addresses.Longitude is not null and
+			@Geo.STDistance (geography::Point(dbo.Addresses.Latitude, dbo.Addresses.Longitude, 4326)) < @Meters
+
+ORDER BY distance asc
+
+SELECT 
+	Id, 
+	, Headline
+	, Description
+	, LeaseTerms
+	, AvailabilityDate
+	, RentCost  
+	from dbo.listings inner join @ListingIds as ls on dbo.listings.id = ls.data
+
+SELECT
+	listingId,
+	fileId,
+	filePath
+	
+	from dbo.listingsfiles inner join @ListingIds as ls
+	on dbo.ListingsFiles.ListingId = ls.data
+		inner join dbo.fileservice 
+		on dbo.listingsFiles.fileId = dbo.FileService.Id
+	
+
+END
